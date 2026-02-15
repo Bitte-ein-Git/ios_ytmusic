@@ -1,17 +1,17 @@
-name: Build and Release YTMusicUltimate
+name: "🌀 • Build Fordy's YouTube Music+"
 
 on:
   workflow_dispatch:
     inputs: 
-      ipa_url:
-        description: "URL to the decrypted IPA file"
-        default: ""
+      version:
+        description: "Version (e.g. 1.0.0)"
         required: true
+        default: "2.3.1"
         type: string
 
       display_name:
         description: "App Name (Optional)"
-        default: "YouTube Music"
+        default: "YTMusic+🗿"
         required: true
         type: string
 
@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout Main
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           path: main
           submodules: recursive
@@ -42,15 +42,25 @@ jobs:
       - name: Hide sensitive inputs
         uses: levibostian/action-hide-sensitive-inputs@v1
 
-      - name: Validate IPA URL
+      - name: Download and validate IPA
         run: |
-          curl -L -r 0-1023 -o sample.part "${{ inputs.ipa_url }}" > /dev/null 2>&1
-          file_type=$(file --mime-type -b sample.part)
-
-          if [[ "$file_type" != "application/x-ios-app" && "$file_type" != "application/zip" ]]; then
-            echo "::error::Validation failed: The file is not a valid IPA file. Detected type: $file_type."
+          ASSET_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/src" | jq -r '.assets[] | select(.name == "src.ipa") | .url')
+          if [ -z "$ASSET_URL" ] || [ "$ASSET_URL" == "null" ]; then
+            echo "::error:: src.ipa not found in release tagged 'src'."
             exit 1
           fi
+          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/octet-stream" "$ASSET_URL" -o ${{ github.workspace }}/src.ipa
+          
+          file_type=$(file --mime-type -b ${{ github.workspace }}/src.ipa)
+          if [[ "$file_type" != "application/x-ios-app" && "$file_type" != "application/zip" ]]; then
+            echo "::error::Validation failed: The file is not a valid IPA."
+            exit 1
+          fi
+
+      - name: Download custom icon
+        run: |
+          icon_url="https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/main/custom/icon.png"
+          wget "$icon_url" --no-verbose -O ${{ github.workspace }}/icon.png
 
       - name: Install Dependencies
         run: brew install make ldid
@@ -88,12 +98,10 @@ jobs:
         env:
           THEOS: ${{ github.workspace }}/theos
 
-      - name: Install cyan
-        run: pipx install --force https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip
-
-      - name: Download YouTube Music
-        id: download_youtube_music
-        run: wget "${{ inputs.ipa_url }}" --no-verbose -O ${{ github.workspace }}/main/ytm.ipa
+      - name: Install Cyan and dependencies
+        run: |
+          pipx install --force https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip
+          pipx inject cyan Pillow
 
       - name: Build Tweak for Sideloading
         id: build_package
@@ -106,15 +114,16 @@ jobs:
       - name: Inject tweak into provided IPA
         run: |
           cd ${{ github.workspace }}/main/packages
-          tweakName=$(ls)
+          tweakName=$(ls *.deb)
           cd ${{ github.workspace }}/main
-          cyan -i ytm.ipa -o packages/YTMusicUltimate.ipa -uwsf packages/$tweakName -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }} 
+          cyan -i ${{ github.workspace }}/src.ipa -o ${{ github.workspace }}/FordyYTM_${{ inputs.version }}.ipa -k ${{ github.workspace }}/icon.png -uwef packages/$tweakName -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }} 
 
       - name: Create Release
         uses: softprops/action-gh-release@v2.4.1
         with:
-          name: YTMusicUltimate-v${{ github.run_number }}
-          files: main/packages/*.ipa
+          name: YTMusic+🗿 v${{ inputs.version }}
+          tag_name: v${{ inputs.version }}
+          files: ${{ github.workspace }}/FordyYTM_${{ inputs.version }}.ipa
           draft: true
 
       - name: Output Release URL
