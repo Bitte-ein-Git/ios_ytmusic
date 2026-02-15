@@ -59,7 +59,7 @@
     } if (section == 3) {
         NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
         NSString *appVersion = infoDictionary[@"CFBundleShortVersionString"];
-        return [NSString stringWithFormat:@"\nYouTubeMusic: v%@\nYTMusicUltimate: v%@", appVersion, @(OS_STRINGIFY(TWEAK_VERSION))];
+        return [NSString stringWithFormat:@"\nYouTubeMusic: v%@\nYouTube Music+🗿: v%@", appVersion, @(OS_STRINGIFY(TWEAK_VERSION))];
     }
 
     return nil;
@@ -163,9 +163,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"linkSection"];
 
         NSArray *settingsData = @[
-            @{@"text": [NSString stringWithFormat:LOC(@"TWITTER"), @"Ginsu"],  @"detail": LOC(@"TWITTER_DESC"), @"image": @"ginsu-24@2x"},
-            @{@"text": [NSString stringWithFormat:LOC(@"TWITTER"), @"Dayanch96"], @"detail": LOC(@"TWITTER_DESC"), @"image": @"dayanch96-24@2x"},
-            @{@"text": LOC(@"DISCORD"), @"detail": LOC(@"DISCORD_DESC"), @"image": @"discord-24@2x"},
+            @{@"text": [NSString stringWithFormat:LOC(@"TWITTER"), @"heyFordy.de"],  @"detail": LOC(@"TWITTER_DESC"), @"image": @"fordy-24@2x"},
             @{@"text": LOC(@"SOURCE_CODE"), @"detail": LOC(@"SOURCE_CODE_DESC"), @"image": @"github-24@2x"}
         ];
 
@@ -241,10 +239,8 @@
     }
 
     if (indexPath.section == 3) {
-        NSArray *urls = @[@"https://twitter.com/ginsudev",
-                        @"https://twitter.com/dayanch96",
-                        @"https://discord.gg/VN9ZSeMhEW",
-                        @"https://github.com/dayanch96/YTMusicUltimate"];
+        NSArray *urls = @[@"https://heyfordy.de",
+                        @"https://github.com/Bitte-ein-Git/ios_ytmusic"];
 
         if (indexPath.row >= 0 && indexPath.row < urls.count) {
             NSURL *url = [NSURL URLWithString:urls[indexPath.row]];
@@ -259,7 +255,7 @@
 
 #pragma mark - Nav bar stuff
 - (NSString *)title {
-    return @"YTMusicUltimate";
+    return @"YouTube Music+🗿";
 }
 
 - (void)closeButtonTapped:(id)sender {
