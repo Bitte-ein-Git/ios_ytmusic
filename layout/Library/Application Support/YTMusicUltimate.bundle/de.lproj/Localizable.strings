@@ -1,5 +1,5 @@
 "SETTINGS" = "Einstellungen";
-"ENABLED" = "YTMusicUltimate Aktivieren";
+"ENABLED" = "YouTube Music+🗿 Aktivieren";
 "ENABLED_DESC" = "Premium Funktionen, keine Werbung, Musik im Hintergrund, etc.";
 "RESTART_FOOTER" = "Du musst die App neustarten, um die änderungen anzuwenden.";
 
@@ -13,9 +13,9 @@
 
 "PLAYER_SETTINGS" = "Player Optionen";
 "DOWNLOAD_AUDIO" = "Musik herunterladen";
-"DOWNLOAD_AUDIO_DESC" = "Fügt eine Option hinzu um Musik herunterzuladen, wenn der YTMusicUltimate Button gedrückt wurde.";
+"DOWNLOAD_AUDIO_DESC" = "Fügt eine Option hinzu um Musik herunterzuladen, wenn der YouTube Music+🗿 Button gedrückt wurde.";
 "DOWNLOAD_COVER" = "Coverbild herunterladen";
-"DOWNLOAD_COVER_DESC" = "Fügt eine Option hinzu, um das Coverbild herunterzuladen, wenn der YTMusicUltimate Button gedrückt wurde.";
+"DOWNLOAD_COVER_DESC" = "Fügt eine Option hinzu, um das Coverbild herunterzuladen, wenn der YouTube Music+🗿 Button gedrückt wurde.";
 "PLAYBACK_RATE_BUTTON" = "Zeige Taste für die Wiedergabegeschwindigkeit";
 "PLAYBACK_RATE_BUTTON_DESC" = "Passen Sie die Wiedergabegeschwindigkeit an";
 "SELECTABLE_LYRICS" = "Textauswahl für Liedtexte";
@@ -81,8 +81,8 @@
 "APPLY_DESC" = "Schließt die App, um Änderungen zu übernehmen";
 
 "LINKS" = "Links";
-"TWITTER" = "Folge %@ auf Twitter";
-"TWITTER_DESC" = "Folge mir für Updates";
+"TWITTER" = "heyFordy.de";
+"TWITTER_DESC" = "Meine Webseite";
 "DISCORD" = "Discord beitreten";
 "DISCORD_DESC" = "Melden Sie Fehler und fordern Sie Funktionen an";
 "SOURCE_CODE" = "Quellcode";
