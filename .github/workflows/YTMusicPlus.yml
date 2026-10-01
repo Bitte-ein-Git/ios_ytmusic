@@ -1,12 +1,11 @@
 name: "🌀 • Build Fordy's YouTube Music+"
-
 on:
   workflow_dispatch:
     inputs: 
       version:
         description: "Version (e.g. 1.0.0)"
         required: true
-        default: "2.3.1"
+        default: "2.4.1"
         type: string
 
       display_name:
@@ -27,20 +26,22 @@ concurrency:
 
 jobs:
   build:
-    name: Build YTMusicUltimate
-    runs-on: macos-14
+    name: Build Custom YTMusicUltimate
+    runs-on: macos-latest
     permissions:
       contents: write
 
     steps:
       - name: Checkout Main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           path: main
           submodules: recursive
 
       - name: Hide sensitive inputs
         uses: levibostian/action-hide-sensitive-inputs@v1
+        with:
+          exclude_inputs: bundle_id,display_name
 
       - name: Download and validate IPA
         run: |
@@ -65,14 +66,16 @@ jobs:
       - name: Install Dependencies
         run: brew install make ldid
 
-      - name: Set PATH environment variable
-        run: echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
+      - name: Set PATH environment variables
+        run: |
+          echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
+          echo "THEOS=${{ github.workspace }}/theos" >> $GITHUB_ENV
 
       - name: Cache Theos
         id: theos
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v5.0.3
         env:
-          cache-name: theos_cache_67db2ab
+          cache-name: theos_cache_344ee59
         with:
           path: theos/
           key: ${{ env.cache-name }}
@@ -80,23 +83,21 @@ jobs:
 
       - name: Setup Theos
         if: steps.theos.outputs.cache-hit != 'true'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.2
         with:
           repository: theos/theos
-          ref: 67db2ab8d950910161730de77c322658ea3e6b44
-          path: ${{ github.workspace }}/theos
+          ref: 344ee5925df036dbd1312b783ad5a00d153c2445
+          path: theos
           submodules: recursive
 
       - name: Download iOS SDK
         if: steps.theos.outputs.cache-hit != 'true'
         run: |
-          git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/theos/sdks/
+          git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/theos/sdks.git
           cd sdks
           git sparse-checkout set --no-cone iPhoneOS16.5.sdk
           git checkout
           mv *.sdk $THEOS/sdks
-        env:
-          THEOS: ${{ github.workspace }}/theos
 
       - name: Install Cyan and dependencies
         run: |
@@ -104,22 +105,16 @@ jobs:
           pipx inject cyan Pillow
 
       - name: Build Tweak for Sideloading
-        id: build_package
         run: |
-          cd ${{ github.workspace }}/main
-          make clean package SIDELOADING=1
-        env:
-          THEOS: ${{ github.workspace }}/theos
+          cd main
+          make clean package DEBUG=0 FINALPACKAGE=1 SIDELOADING=1
+          mv packages/*.deb ../ytmult.deb
 
       - name: Inject tweak into provided IPA
-        run: |
-          cd ${{ github.workspace }}/main/packages
-          tweakName=$(ls *.deb)
-          cd ${{ github.workspace }}/main
-          cyan -i ${{ github.workspace }}/src.ipa -o ${{ github.workspace }}/FordyYTM_${{ inputs.version }}.ipa -k ${{ github.workspace }}/icon.png -uwef packages/$tweakName -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }} 
+        run: cyan -i ${{ github.workspace }}/src.ipa -o ${{ github.workspace }}/FordyYTM_${{ inputs.version }}.ipa -k ${{ github.workspace }}/icon.png -uwef ytmult.deb -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }} 
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2.4.1
+        uses: softprops/action-gh-release@v2.5.0
         with:
           name: YTMusic+🗿 v${{ inputs.version }}
           tag_name: v${{ inputs.version }}

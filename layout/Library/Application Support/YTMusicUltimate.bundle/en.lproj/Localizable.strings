@@ -81,8 +81,8 @@
 "APPLY_DESC" = "Closes the app to apply changes";
 
 "LINKS" = "Links";
-"TWITTER" = "heyFordy.de";
-"TWITTER_DESC" = "My Website";
+"TWITTER" = "heyFordy.dev";
+"TWITTER_DESC" = "Website / Linktree";
 "DISCORD" = "Join the Discord";
 "DISCORD_DESC" = "Report bugs and request features";
 "SOURCE_CODE" = "Source code";

@@ -163,7 +163,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"linkSection"];
 
         NSArray *settingsData = @[
-            @{@"text": [NSString stringWithFormat:LOC(@"TWITTER"), @"heyFordy.de"],  @"detail": LOC(@"TWITTER_DESC"), @"image": @"fordy-24@2x"},
+            @{@"text": [NSString stringWithFormat:LOC(@"TWITTER"), @"heyFordy.dev"],  @"detail": LOC(@"TWITTER_DESC"), @"image": @"fordy-24@2x"},
             @{@"text": LOC(@"SOURCE_CODE"), @"detail": LOC(@"SOURCE_CODE_DESC"), @"image": @"github-24@2x"}
         ];
 
@@ -239,7 +239,7 @@
     }
 
     if (indexPath.section == 3) {
-        NSArray *urls = @[@"https://heyfordy.de",
+        NSArray *urls = @[@"https://heyfordy.dev",
                         @"https://github.com/Bitte-ein-Git/ios_ytmusic"];
 
         if (indexPath.row >= 0 && indexPath.row < urls.count) {
